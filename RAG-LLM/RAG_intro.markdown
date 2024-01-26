@@ -33,7 +33,49 @@ from langchain_openai import ChatOpenAI
 open_api_key = os.getenv("OPENAI_API_KEY")
 llm = ChatOpenAI(openai_api_key=open_api_key)
 
+from langchain_community.document_loaders import WebBaseLoader
+loader = WebBaseLoader("https://docs.smith.langchain.com/overview")
+
+docs = loader.load()
+
+# index it into a vectorstore -- embedding model vectorstore
+
+from langchain_openai import OpenAIEmbeddings
+
+embeddings = OpenAIEmbeddings()
+
+from langchain_community.vectorstores import FAISS
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+
+
+text_splitter = RecursiveCharacterTextSplitter()
+documents = text_splitter.split_documents(docs)
+vector = FAISS.from_documents(documents, embeddings)
+
+# Create a retrieved chain
+from langchain.chains.combine_documents import create_stuff_documents_chain
+
+prompt = ChatPromptTemplate.from_template("""Answer the following question based only on the provided context:
+
+<context>
+{context}
+</context>
+
+Question: {input}""")
+
+document_chain = create_stuff_documents_chain(llm, prompt)
+
+from langchain_core.documents import Document
+
+document_chain.invoke({
+    "input": "how can langsmith help with testing?",
+    "context": [Document(page_content="langsmith can let you visualize test results")]
+})
 
 ```
+#### [RAG in LangChain](https://python.langchain.com/docs/expression_language/cookbook/retrieval)
+
+
+
 
 
