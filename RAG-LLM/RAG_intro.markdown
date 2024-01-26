@@ -24,5 +24,16 @@ RAG 是一种结合了检索和生成的技术，即结合大模型的生成能�
 ### LangChain Intro
 LangChain:是一个开发语言模型应用的框架，主要是两个作用。第一个是上下文敏感(能够帮助LM连接外部知识，各种上下文资源)，第二个是依赖LM去推理，生成回答。 
 
+#### Retrieval Chain
+```python
+import os
+from langchain_openai import ChatOpenAI
+
+# initialize the LLM 
+open_api_key = os.getenv("OPENAI_API_KEY")
+llm = ChatOpenAI(openai_api_key=open_api_key)
+
+
+```
 
 
